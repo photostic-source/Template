@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-	Multiverse by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
 	<head>
 		<title>Multiverse by HTML5 UP</title>
@@ -28,67 +23,8 @@
 					</header>
 
 				<!-- Main -->
-					<div id="main">
-						<article class="thumb">
-							<a href="images/fulls/01.jpg" class="image"><img src="images/thumbs/01.jpg" alt="" /></a>
-							<h2>Magna feugiat lorem</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/02.jpg" class="image"><img src="images/thumbs/02.jpg" alt="" /></a>
-							<h2>Nisl adipiscing</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/03.jpg" class="image"><img src="images/thumbs/03.jpg" alt="" /></a>
-							<h2>Tempus aliquam veroeros</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/04.jpg" class="image"><img src="images/thumbs/04.jpg" alt="" /></a>
-							<h2>Aliquam ipsum sed dolore</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/05.jpg" class="image"><img src="images/thumbs/05.jpg" alt="" /></a>
-							<h2>Cursis aliquam nisl</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/06.jpg" class="image"><img src="images/thumbs/06.jpg" alt="" /></a>
-							<h2>Sed consequat phasellus</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/07.jpg" class="image"><img src="images/thumbs/07.jpg" alt="" /></a>
-							<h2>Mauris id tellus arcu</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/08.jpg" class="image"><img src="images/thumbs/08.jpg" alt="" /></a>
-							<h2>Nunc vehicula id nulla</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/09.jpg" class="image"><img src="images/thumbs/09.jpg" alt="" /></a>
-							<h2>Neque et faucibus viverra</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/10.jpg" class="image"><img src="images/thumbs/10.jpg" alt="" /></a>
-							<h2>Mattis ante fermentum</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/11.jpg" class="image"><img src="images/thumbs/11.jpg" alt="" /></a>
-							<h2>Sed ac elementum arcu</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
-						<article class="thumb">
-							<a href="images/fulls/12.jpg" class="image"><img src="images/thumbs/12.jpg" alt="" /></a>
-							<h2>Vehicula id nulla dignissim</h2>
-							<p>Nunc blandit nisi ligula magna sodales lectus elementum non. Integer id venenatis velit.</p>
-						</article>
+					<div id="main" class="image-gallery">
+						<!-- Images will be dynamically inserted here by JavaScript -->
 					</div>
 
 				<!-- Footer -->
@@ -148,7 +84,49 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-<!-- Scripts -->
-			<script src="assets/js/main.js"></script>
+
+			<!-- Fetch and display images from GitHub -->
+			<script>
+				// GitHub repository details
+				const username = 'photostic-source'; // Replace with your GitHub username
+				const repo = 'Template'; // Replace with your repository name
+				const branch = 'main'; // or 'master'
+
+				// GitHub API URL to fetch contents of thumbs and fulls folders
+				const thumbsFolder = `https://api.github.com/repos/$photostic-source/$Template/contents/thumbs`;
+				const fullsFolder = `https://api.github.com/repos/$photostic-source/$Template/contents/fulls`;
+
+				// Function to fetch files from a directory in the GitHub repository
+				const fetchImages = async (folderUrl, folderType) => {
+					const response = await fetch(folderUrl);
+					const data = await response.json();
+					const gallery = document.querySelector('#main');
+					
+					data.forEach(file => {
+						// Only consider image files
+						if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+							// Construct the image URLs
+							const fullImageUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/fulls/${file.name}`;
+							const thumbImageUrl = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/thumbs/${file.name}`;
+
+							// Create article element for each image
+							const article = document.createElement('article');
+							article.classList.add('thumb');
+							article.innerHTML = `
+								<a href="${fullImageUrl}" class="image">
+									<img src="${thumbImageUrl}" alt="" />
+								</a>
+								<h2>${file.name}</h2>
+								<p>Image description goes here.</p>
+							`;
+							gallery.appendChild(article);
+						}
+					});
+				};
+
+				// Fetch images from both thumbs and fulls folder
+				fetchImages(thumbsFolder, 'thumbs');
+				fetchImages(fullsFolder, 'fulls');
+			</script>
 	</body>
 </html>
